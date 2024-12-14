@@ -104,3 +104,27 @@ app.get('/auth/logout', (req, res) => {
     console.log("Logout req arrived!")
     res.status(202).clearCookie("jwt").json({"Msg": "cookie cleared"}).send
 });
+
+app.get('/posts', async (req, res) => {
+    try {
+        const posts = await pool.query('SELECT * FROM posts ORDER BY id DESC');
+        res.status(200).json(posts.rows);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post('/posts', async (req, res) => {
+    try {
+        const { content } = req.body;
+
+        const newPost = await pool.query(
+            'INSERT INTO posts (content) VALUES ($1) RETURNING *',
+            [content]
+        );
+        res.status(201).json(newPost.rows[0]);
+    } catch (error) {
+        console.error('Error adding post:', error.message);
+        res.status(500).json({ error: 'Failed to add post' });
+    }
+});
