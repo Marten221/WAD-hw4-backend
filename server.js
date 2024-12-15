@@ -184,3 +184,20 @@ app.delete('/posts/:id', async (req, res) => {
         res.status(500).json({ error: 'Failed to delete post.' });
     }
 });
+app.delete('/posts', async (req, res) => {
+    try {
+        const result = await pool.query('DELETE FROM posts RETURNING *');
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "No posts to delete." });
+        }
+
+        res.status(200).json({
+            message: `${result.rows.length} post(s) deleted successfully.`,
+            deletedPosts: result.rows,
+        });
+    } catch (error) {
+        console.error('Error deleting all posts:', error.message);
+        res.status(500).json({ error: 'Failed to delete all posts.' });
+    }
+});
