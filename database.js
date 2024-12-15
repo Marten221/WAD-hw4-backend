@@ -40,7 +40,7 @@ execute(createTblQuery).then(result => {
 const createPostsTbl = `
     CREATE TABLE IF NOT EXISTS "posts" (
         id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-        createTime DATE NOT NULL DEFAULT CURRENT_DATE, 
+        createtime DATE NOT NULL DEFAULT CURRENT_DATE, 
         content VARCHAR(500)
     );`;
 
